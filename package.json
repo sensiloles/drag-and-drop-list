@@ -1,0 +1,19 @@
+{
+  "name": "drag-and-drop-list",
+  "version": "1.0.0",
+  "description": "Implementation drag and drop list for practical experience",
+  "main": "index.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sensiloles/drag-and-drop-list.git"
+  },
+  "author": "Aleksey Filippov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sensiloles/drag-and-drop-list/issues"
+  },
+  "homepage": "https://github.com/sensiloles/drag-and-drop-list#readme"
+}
