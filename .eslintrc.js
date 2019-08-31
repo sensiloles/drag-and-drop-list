@@ -24,6 +24,8 @@ module.exports = {
     'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     '@typescript-eslint/indent': [2, 2],
-    'react/jsx-props-no-spreading': [0]
+    'react/jsx-props-no-spreading': [0],
+    'no-shadow': [1],
+    '@typescript-eslint/no-explicit-any': [1]
   }
 };

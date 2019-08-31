@@ -15,9 +15,8 @@
   "main": "index.tsx",
   "scripts": {
     "build": "webpack -p --progress --colors",
-    "prettier": "prettier --write \"src/**/*.{ts,tsx,js,jsx,html}\"",
-    "start": "webpack-dev-server --mode development --hot --progress --color --open",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint src -c .eslintrc.js --ext ts,tsx,js,jsx",
+    "start": "webpack-dev-server --mode development --hot --progress --color --open"
   },
   "dependencies": {
     "@atlaskit/css-reset": "^5.0.8",
