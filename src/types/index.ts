@@ -5,7 +5,7 @@ export interface InitialData {
   columns: {
     [key: string]: ColumnTypes;
   };
-  columnOrder: [string];
+  columnOrder: string[];
 }
 
 export interface TaskTypes {

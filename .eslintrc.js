@@ -8,7 +8,14 @@ module.exports = {
     'plugin:prettier/recommended'
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jsx-a11y', 'json', 'prettier'],
+  plugins: [
+    '@typescript-eslint',
+    'react',
+    'react-hooks',
+    'jsx-a11y',
+    'json',
+    'prettier'
+  ],
   env: {
     browser: true
   },
@@ -21,7 +28,10 @@ module.exports = {
     }
   },
   rules: {
-    'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+    'react/jsx-filename-extension': [
+      2,
+      { extensions: ['.js', '.jsx', '.ts', '.tsx'] }
+    ],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     '@typescript-eslint/indent': [2, 2],
     'react/jsx-props-no-spreading': [0],

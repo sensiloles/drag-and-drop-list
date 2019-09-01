@@ -9,7 +9,8 @@ import postcssPresetEnv from 'postcss-preset-env';
 import postcssReporter from 'postcss-reporter';
 import postcssBrowserReporter from 'postcss-browser-reporter';
 
-const isProduction = process.argv.indexOf('-p') >= 0 || process.env.NODE_ENV === 'production';
+const isProduction =
+  process.argv.indexOf('-p') >= 0 || process.env.NODE_ENV === 'production';
 const sourcePath = path.join(__dirname, './src');
 const outPath = path.join(__dirname, './build');
 
@@ -38,7 +39,7 @@ module.exports = {
       disableDotRule: true
     },
     stats: 'minimal',
-    clientLogLevel: 'warning'
+    clientLogLevel: 'info'
   },
   node: {
     fs: 'empty',
@@ -113,7 +114,9 @@ module.exports = {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
           chunks: 'all',
-          filename: isProduction ? 'vendor.[contenthash].js' : 'vendor.[hash].js',
+          filename: isProduction
+            ? 'vendor.[contenthash].js'
+            : 'vendor.[hash].js',
           priority: -10
         }
       }
