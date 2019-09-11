@@ -46,7 +46,7 @@ interface TaskProps {
 
 export default function Task(
   props: TaskProps
-): React.ReactElement<DraggableProps> {
+): React.ReactElement<HTMLElement> {
   const {
     task: { id, content },
     index
@@ -58,7 +58,7 @@ export default function Task(
       {(
         providet: DraggableProvided,
         snapshot: DraggableStateSnapshot
-      ): React.ReactElement<any> => (
+      ): React.ReactElement<HTMLElement> => (
         <Container
           {...providet.draggableProps}
           {...providet.dragHandleProps}

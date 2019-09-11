@@ -1,41 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import { hot } from 'react-hot-loader';
 import '@atlaskit/css-reset';
 import {
   DragDropContext,
+  Droppable,
   DropResult,
-  DragDropContextProps,
-  DragUpdate
+  // DragUpdate,
+  DragStart,
+  DroppableProvided
 } from 'react-beautiful-dnd';
 import styled, { AnyStyledComponent } from 'styled-components';
 import initialData from '../../data/initial-data';
-import Column, { ColumnProps } from '../Column';
+import Column from '../Column';
 import { InitialData, ColumnTypes, TaskTypes } from '../../types';
 
 const Container: AnyStyledComponent = styled.div`
   display: flex;
 `;
 
-const App = (): React.ReactElement<DragDropContextProps> => {
+interface InnerListProps {
+  column: ColumnTypes;
+  taskMap: {
+    [key: string]: TaskTypes;
+  };
+  index: number;
+  isDropDisabled?: boolean;
+}
+
+class InnerList extends React.Component<InnerListProps> {
+  shouldComponentUpdate(nextProps: InnerListProps): boolean {
+    const { column, taskMap, index } = this.props;
+
+    if (
+      nextProps.column === column &&
+      nextProps.taskMap === taskMap &&
+      nextProps.index === index
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  render(): ReactNode {
+    const { column, taskMap, index, isDropDisabled } = this.props;
+    const tasks = column.taskIds.map((taskId: string) => taskMap[taskId]);
+
+    return (
+      <Column
+        column={column}
+        tasks={tasks}
+        index={index}
+        isDropDisabled={isDropDisabled}
+      />
+    );
+  }
+}
+
+const App = (): React.ReactElement<HTMLElement> => {
   const [state, setState] = useState(initialData);
 
-  function onDragStart(): void {
-    document.body.style.color = 'orange';
-    document.body.style.transition = 'background-color 0.5s ease';
+  function onDragStart(start: DragStart): void {
+    const homeIndex: number = state.columnOrder.indexOf(
+      start.source.droppableId
+    );
+
+    setState({
+      ...state,
+      homeIndex
+    });
   }
 
-  function onDragUpdate(update: DragUpdate): void {
-    const { destination } = update;
-    const opacity: number = destination
-      ? destination.index / Object.keys(state.tasks).length
-      : 0;
-    document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
-  }
+  // function onDragUpdate(update: DragUpdate): void {
+  //   const { destination } = update;
+  //   const opacity: number = destination
+  //     ? destination.index / Object.keys(state.tasks).length
+  //     : 0;
+  //   document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
+  // }
 
   function onDragEnd(result: DropResult): void {
-    document.body.style.color = 'inherit';
+    setState({
+      ...state,
+      homeIndex: undefined
+    });
 
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId, type } = result;
 
     if (!destination) {
       return;
@@ -45,6 +95,20 @@ const App = (): React.ReactElement<DragDropContextProps> => {
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     ) {
+      return;
+    }
+
+    if (type === 'column') {
+      const newColumnOrder: string[] = Array.from(state.columnOrder);
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(destination.index, 0, draggableId);
+
+      const newState: InitialData = {
+        ...state,
+        columnOrder: newColumnOrder
+      };
+
+      setState(newState);
       return;
     }
 
@@ -83,7 +147,7 @@ const App = (): React.ReactElement<DragDropContextProps> => {
 
     const finishTaskIds: string[] = Array.from(finish.taskIds);
     finishTaskIds.splice(destination.index, 0, draggableId);
-    const newFinish = {
+    const newFinish: ColumnTypes = {
       ...finish,
       taskIds: finishTaskIds
     };
@@ -103,20 +167,39 @@ const App = (): React.ReactElement<DragDropContextProps> => {
   return (
     <DragDropContext
       onDragStart={onDragStart}
-      onDragUpdate={onDragUpdate}
+      // onDragUpdate={onDragUpdate}
       onDragEnd={onDragEnd}
     >
-      <Container>
-        {state.columnOrder.map(
-          (columnId: string): React.ReactElement<ColumnProps> => {
-            const column: ColumnTypes = state.columns[columnId];
-            const tasks: TaskTypes[] = column.taskIds.map(
-              (tastId: string): TaskTypes => state.tasks[tastId]
-            );
-            return <Column key={columnId} column={column} tasks={tasks} />;
-          }
+      <Droppable droppableId="all-columns" direction="horizontal" type="column">
+        {(provided: DroppableProvided): React.ReactElement<HTMLElement> => (
+          <Container {...provided.droppableProps} ref={provided.innerRef}>
+            {state.columnOrder.map(
+              (
+                columnId: string,
+                index: number
+              ): React.ReactElement<HTMLElement> => {
+                const column: ColumnTypes = state.columns[columnId];
+                // const { homeIndex } = state;
+
+                // const isDropDisabled: boolean = homeIndex
+                //   ? index < homeIndex
+                //   : false;
+
+                return (
+                  <InnerList
+                    key={columnId}
+                    column={column}
+                    taskMap={state.tasks}
+                    // isDropDisabled={isDropDisabled}
+                    index={index}
+                  />
+                );
+              }
+            )}
+            {provided.placeholder}
+          </Container>
         )}
-      </Container>
+      </Droppable>
     </DragDropContext>
   );
 };

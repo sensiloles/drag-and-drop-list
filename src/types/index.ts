@@ -6,6 +6,7 @@ export interface InitialData {
     [key: string]: ColumnTypes;
   };
   columnOrder: string[];
+  homeIndex?: number;
 }
 
 export interface TaskTypes {
